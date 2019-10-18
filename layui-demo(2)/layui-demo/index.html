@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/layui.css">
+  <style>
+    .table-checked-bg {
+      background: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <table class="layui-hide" id="test" lay-filter="test"></table>
+  <script src="./layui.js"></script>
+  <script src="./jquery-3.3.1.min.js"></script>
+  <script>
+    layui.use('table', function () {
+      var table = layui.table;
+
+      table.render({
+        elem: '#test'
+        , data: [{
+          "id": "10001"
+          , "username": "杜甫"
+          , "email": "xianxin@layui.com"
+          , "sex": "男"
+          , "city": "浙江杭州"
+          , "sign": "人生恰似一场修行"
+          , "experience": "116"
+          , "ip": "192.168.0.8"
+          , "logins": "108"
+          , "joinTime": "2016-10-14"
+        }, {
+          "id": "10002"
+          , "username": "李白"
+          , "email": "xianxin@layui.com"
+          , "sex": "男"
+          , "city": "浙江杭州"
+          , "sign": "人生恰似一场修行"
+          , "experience": "12"
+          , "ip": "192.168.0.8"
+          , "logins": "106"
+          , "joinTime": "2016-10-14"
+        }, {
+          "id": "10003"
+          , "username": "王勃"
+          , "email": "xianxin@layui.com"
+          , "sex": "男"
+          , "city": "浙江杭州"
+          , "sign": "人生恰似一场修行"
+          , "experience": "65"
+          , "ip": "192.168.0.8"
+          , "logins": "106"
+          , "joinTime": "2016-10-14"
+        }]
+        , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+        , cols: [[ //标题栏
+          { type: 'checkbox', fixed: 'left' }
+          , { field: 'id', title: 'ID', width: 80 }
+          , { field: 'username', title: '用户名', width: 120 }
+          , { field: 'email', title: '邮箱', minWidth: 150 }
+          , { field: 'sign', title: '签名', minWidth: 160 }
+          , { field: 'sex', title: '性别', width: 80 }
+          , { field: 'city', title: '城市', width: 100 }
+          , { field: 'experience', title: '积分', width: 80 }
+        ]]
+      });
+      //单击行勾选checkbox事件
+      $(document).on("click", ".layui-table-body table.layui-table tbody tr", function () {
+        var index = $(this).attr('data-index');
+        var tableBox = $(this).parents('.layui-table-box');
+        //存在固定列
+        if (tableBox.find(".layui-table-fixed.layui-table-fixed-l").length > 0) {
+          tableDiv = tableBox.find(".layui-table-fixed.layui-table-fixed-l");
+        } else {
+          tableDiv = tableBox.find(".layui-table-body.layui-table-main");
+        }
+        var checkCell = tableDiv.find("tr[data-index=" + index + "]").find("td div.laytable-cell-checkbox div.layui-form-checkbox I");
+        if (checkCell.length > 0) {
+          checkCell.click();
+        }
+      });
+
+      $(document).on("click", "td div.laytable-cell-checkbox div.layui-form-checkbox", function (e) {
+        e.stopPropagation();
+      });
+      table.on('checkbox(test)', function (obj) {
+        // 全选
+        console.log(1111)
+        if (obj.type == 'all' && obj.checked == true) {
+          $('.layui-table-body table.layui-table tbody tr').addClass('table-checked-bg')
+        } else if (obj.checked == false && obj.type == 'all') {
+          // 取消全选
+          $('.layui-table-body table.layui-table tbody tr').removeClass('table-checked-bg')
+        } else if (obj.checked == true && obj.type == 'one') {
+          //点击单行
+          if (obj.checked == true) {
+            obj.tr.addClass('table-checked-bg');
+            var checkStatus = table.checkStatus('test')
+              , data = checkStatus.data;
+          } else {
+            obj.tr.removeClass('table-checked-bg');
+          }
+        } else if (obj.checked == false && obj.type == 'one') {
+          //点击全选之后点击单行
+          if (obj.tr.hasClass('table-checked-bg')) {
+            obj.tr.removeClass('table-checked-bg');
+            var checkStatus = table.checkStatus('test')
+              , data = checkStatus.data;
+          }
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
